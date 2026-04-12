@@ -1,5 +1,5 @@
 /**
- * カスタムクロス表作成：ヘッダー整形・罫線・太字装飾付き
+ * カスタムクロス表作成：ヘッダー整形・罫線・太字装飾付き//
  */
 function createFinalCustomTable() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
