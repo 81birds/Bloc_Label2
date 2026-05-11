@@ -41,7 +41,7 @@ function transferData() {
     // 書き込み前にB2:Gの範囲をクリア
     const lastRow = sakiSheet.getLastRow();
     if (lastRow > 1) {
-      sakiSheet.getRange("B2:G" + lastRow).clearContent();
+      sakiSheet.getRange("B2:M" + lastRow).clearContent();
     }
 
     // B2からoutputDataの列数(7列分)を一括書き込み
