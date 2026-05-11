@@ -73,72 +73,72 @@ function applyAssortPattern2() {//書き出し先のH列をスキャンしてブ
 
 
 
-function applyAssortPattern() {////上のコードを使用中、以下はバックアップ
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const free = ss.getSheetByName("フリー入力用");
-  const ast = ss.getSheetByName("アソートDB");
+// function applyAssortPattern() {////上のコードを使用中、以下はバックアップ
+//   const ss = SpreadsheetApp.getActiveSpreadsheet();
+//   const free = ss.getSheetByName("フリー入力用");
+//   const ast = ss.getSheetByName("アソートDB");
 
-  // 1. アソートDB（マスター）を辞書化
-  const astData = ast.getRange("B2:Q" + ast.getLastRow()).getValues();
-  let masterMap = {};
-  astData.forEach(row => {
-    const dayOfWeek = row[0]; // B列: 曜日
-    const client = row[3];    // E列: クライアント
-    const shop = row[4];      // F列: 店名
-    // H列(索引6)からQ列(索引15)までのパターンを配列化（空白は除外）
-    const pattern = row.slice(6, 16).filter(item => item !== "");
+//   // 1. アソートDB（マスター）を辞書化
+//   const astData = ast.getRange("B2:Q" + ast.getLastRow()).getValues();
+//   let masterMap = {};
+//   astData.forEach(row => {
+//     const dayOfWeek = row[0]; // B列: 曜日
+//     const client = row[3];    // E列: クライアント
+//     const shop = row[4];      // F列: 店名
+//     // H列(索引6)からQ列(索引15)までのパターンを配列化（空白は除外）
+//     const pattern = row.slice(6, 16).filter(item => item !== "");
     
-    if (dayOfWeek && client && shop && pattern.length > 0) {
-      const key = `${dayOfWeek}|${client}|${shop}`;
-      masterMap[key] = pattern;
-    }
-  });
+//     if (dayOfWeek && client && shop && pattern.length > 0) {
+//       const key = `${dayOfWeek}|${client}|${shop}`;
+//       masterMap[key] = pattern;
+//     }
+//   });
 
-  // 2. フリー入力用のデータを取得
-  const lastRow = free.getLastRow();
-  if (lastRow < 2) return;
-  const freeRange = free.getRange("B2:H" + lastRow);
-  const freeData = freeRange.getValues();
+//   // 2. フリー入力用のデータを取得
+//   const lastRow = free.getLastRow();
+//   if (lastRow < 2) return;
+//   const freeRange = free.getRange("B2:H" + lastRow);
+//   const freeData = freeRange.getValues();
   
-  const days = ["日", "月", "火", "水", "木", "金", "土"];
-  let results = [];
+//   const days = ["日", "月", "火", "水", "木", "金", "土"];
+//   let results = [];
   
-  // 3. グループごとに処理（日付＋クライアント＋店名が同じ範囲を特定）
-  let i = 0;
-  while (i < freeData.length) {
-    const row = freeData[i];
-    const date = new Date(row[0]);
-    const dayStr = days[date.getDay()];
-    const client = row[1];
-    const shop = row[2];
-    const key = `${dayStr}|${client}|${shop}`;
+//   // 3. グループごとに処理（日付＋クライアント＋店名が同じ範囲を特定）
+//   let i = 0;
+//   while (i < freeData.length) {
+//     const row = freeData[i];
+//     const date = new Date(row[0]);
+//     const dayStr = days[date.getDay()];
+//     const client = row[1];
+//     const shop = row[2];
+//     const key = `${dayStr}|${client}|${shop}`;
 
-    // 同じグループが何行続くかカウント
-    let groupRows = [];
-    while (i < freeData.length && 
-           Utilities.formatDate(new Date(freeData[i][0]), "JST", "yyyyMMdd") === Utilities.formatDate(date, "JST", "yyyyMMdd") &&
-           freeData[i][1] === client && 
-           freeData[i][2] === shop) {
-      groupRows.push(i);
-      i++;
-    }
+//     // 同じグループが何行続くかカウント
+//     let groupRows = [];
+//     while (i < freeData.length && 
+//            Utilities.formatDate(new Date(freeData[i][0]), "JST", "yyyyMMdd") === Utilities.formatDate(date, "JST", "yyyyMMdd") &&
+//            freeData[i][1] === client && 
+//            freeData[i][2] === shop) {
+//       groupRows.push(i);
+//       i++;
+//     }
 
-    // パターンの割り当て
-    const pattern = masterMap[key];
-    groupRows.forEach((rowIndex, index) => {
-      if (pattern) {
-        // パターン数で割った余りを使うことで、先頭に戻るループを実現
-        const charToFill = pattern[index % pattern.length];
-        results[rowIndex] = [charToFill];
-      } else {
-        results[rowIndex] = [""]; // マスターになければ空欄
-      }
-    });
-  }
+//     // パターンの割り当て
+//     const pattern = masterMap[key];
+//     groupRows.forEach((rowIndex, index) => {
+//       if (pattern) {
+//         // パターン数で割った余りを使うことで、先頭に戻るループを実現
+//         const charToFill = pattern[index % pattern.length];
+//         results[rowIndex] = [charToFill];
+//       } else {
+//         results[rowIndex] = [""]; // マスターになければ空欄
+//       }
+//     });
+//   }
 
-  // 4. H列に一括書き出し
-  free.getRange(2, 8, results.length, 1).setValues(results);
-}
+//   // 4. H列に一括書き出し
+//   free.getRange(2, 8, results.length, 1).setValues(results);
+// }
 
 
 function setHToCharCIfUnique() {
