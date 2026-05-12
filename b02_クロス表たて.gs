@@ -145,18 +145,41 @@ function createVerticalProductCrossTables555() {
   const data = sourceSheet.getDataRange().getValues();
   const header = data.shift();
 
+  // const col = {
+  //   date: header.indexOf('納品日'),
+  //   location: header.indexOf('制作場所'),
+  //   product: header.indexOf('アソート'),
+  //   client: header.indexOf('クライアント名'),
+  //   area: header.indexOf('エリア'),
+  //   course: header.indexOf('コース番号'),
+  //   shop: header.indexOf('店名'),
+  //   qty: header.indexOf('数量'),
+  //   note: header.indexOf('備考'),
+  //   assortM: 12
+  // };
+
+
   const col = {
-    date: header.indexOf('納品日'),
-    location: header.indexOf('制作場所'),
-    product: header.indexOf('アソート'),
-    client: header.indexOf('クライアント名'),
-    area: header.indexOf('エリア'),
-    course: header.indexOf('コース番号'),
-    shop: header.indexOf('店名'),
-    qty: header.indexOf('数量'),
-    note: header.indexOf('備考'),
-    assortM: 12
-  };
+  date:     header.indexOf('納品日'),
+  location: header.indexOf('制作場所'),
+  product:  header.indexOf('アソート'),
+  client:   header.indexOf('クライアント名'),
+  area:     header.indexOf('エリア'),
+  course:   header.indexOf('コース番号'),
+  shop:     header.indexOf('店名'),
+  qty:      header.indexOf('数量'),
+  note:     header.indexOf('備考'),
+  assortM:  header.indexOf('アソート数量名')  // ← ハードコードをindexOfに修正
+};
+
+
+
+
+
+
+
+
+
 
   const fixedProducts = ['A', 'B', 'C', 'D'];
   const fixedBoxTypes = [50, 40, 30, 20, 15, 10];

@@ -1,5 +1,8 @@
 /**
  * MOTOシートからデータをスキャンし、SAKIシートに日付ごとに転記する
+ * 日付(2行目・E列〜)と商品名(3行目・E列〜)である必要
+ * 店舗名はC5からはじまっている必要
+ * 
  */
 function transferData() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -38,7 +41,7 @@ function transferData() {
 
   // 3. SAKIシートに書き込み
   if (outputData.length > 0) {
-    // 書き込み前にB2:Gの範囲をクリア
+    // 書き込み前にB2:Mの範囲をクリア
     const lastRow = sakiSheet.getLastRow();
     if (lastRow > 1) {
       sakiSheet.getRange("B2:M" + lastRow).clearContent();
