@@ -5,8 +5,8 @@ function splitRowsByQuantityAdvanced2() {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return;
 
-  // A列〜L列（12列分）を取得
-  const range = sheet.getRange(1, 1, lastRow, 12);
+  // A列〜O列（15列分）を取得
+  const range = sheet.getRange(1, 1, lastRow, 15);
   const values = range.getValues();
   
   const data = values.slice(1);
@@ -60,10 +60,10 @@ function splitRowsByQuantityAdvanced2() {
 
   // 書き込み処理
   if (sheet.getLastRow() > 1) {
-    sheet.getRange(2, 1, sheet.getLastRow() - 1, 12).clearContent();
+    sheet.getRange(2, 1, sheet.getLastRow() - 1, 15).clearContent();
   }
   if (newValues.length > 0) {
-    sheet.getRange(2, 1, newValues.length, 12).setValues(newValues);
+    sheet.getRange(2, 1, newValues.length, 15).setValues(newValues);
   }
 }
 
