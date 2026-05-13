@@ -1,4 +1,4 @@
-function freeSheetCleaningAllProcesses() {
+function data2freeSheetAll() {
   ///console.log('--- 処理を開始します ---');
 
 transferData();//元データからフリー入力用に転記  
@@ -8,8 +8,6 @@ clearFreeInputBackgrounds();//背景色クリア
 
   ///console.log('--- すべての処理が正常に完了しました ---');
 }
-
-
 
 /**
  * MOTOシートからデータをスキャンし、SAKIシートに日付ごとに転記する
@@ -132,8 +130,6 @@ function cleanShopNames() {
   // シートに書き戻し
   range.setValues(cleanedValues);
 }
-
-
 
 
 function clearFreeInputBackgrounds() {

@@ -1,4 +1,4 @@
-function corseDBtoFreeNsheet() {
+function courseDBtoFreeNsheet() {
   ///console.log('--- 処理を開始します ---');
 
 lookupCourseData2();//メイン転記

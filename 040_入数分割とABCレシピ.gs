@@ -1,10 +1,99 @@
-function runAllProcessesThrough() {
+function boxingAndABC_ALL() {
 
+
+splitRowsByQuantityAdvanced2();
 applyAssortPattern2();
 setHToCharCIfUnique();
+updateConcatColumn();//ABCアソート名と入数合体
 
 }
 
+
+function splitRowsByQuantityAdvanced2() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('フリー入力用');
+  
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return;
+
+  // A列〜O列（15列分）を取得
+  const range = sheet.getRange(1, 1, lastRow, 15);
+  const values = range.getValues();
+  
+  const data = values.slice(1);
+  const newValues = [];
+
+  data.forEach(row => {
+    let quantity = Number(row[6]); // G列: 数量
+    
+    if (isNaN(quantity) || quantity <= 0) {
+      newValues.push(row);
+      return;
+    }
+
+    // 分解後の数字を格納する配列
+    let parts = [];
+
+    // --- 分解ロジックの優先順位 ---
+    
+    // パターン1: 50と40の組み合わせで割り切れるか（90, 130, 140, 180など）
+    let tempParts = findCombination(quantity, 50, 40);
+    
+    // パターン2: 上記がダメなら 40と30の組み合わせ（70, 110, 150など）
+    if (tempParts.length === 0) {
+      tempParts = findCombination(quantity, 40, 30);
+    }
+
+    // いずれかの組み合わせで見つかった場合
+    if (tempParts.length > 0) {
+      parts = tempParts;
+    } else {
+      // どちらの組み合わせでも分解できない（または50, 40, 30単体で割り切れる）場合
+      if (quantity % 50 === 0) {
+        parts = Array(quantity / 50).fill(50);
+      } else if (quantity % 40 === 0) {
+        parts = Array(quantity / 40).fill(40);
+      } else if (quantity % 30 === 0) {
+        parts = Array(quantity / 30).fill(30);
+      } else {
+        // 全く当てはまらない場合は分解しない
+        parts = [quantity];
+      }
+    }
+
+    // 分解されたパーツ分だけ行を複製
+    parts.forEach(p => {
+      const newRow = [...row];
+      newRow[6] = p; // G列に分解した数値をセット
+      newValues.push(newRow);
+    });
+  });
+
+  // 書き込み処理
+  if (sheet.getLastRow() > 1) {
+    sheet.getRange(2, 1, sheet.getLastRow() - 1, 15).clearContent();
+  }
+  if (newValues.length > 0) {
+    sheet.getRange(2, 1, newValues.length, 15).setValues(newValues);
+  }
+}
+
+/**
+ * 二つの数値の組み合わせで合計値が作れるか計算する補助関数
+ * 補助関数は一括実行にはふくめない
+ */
+function findCombination(total, num1, num2) {
+  // num1をできるだけ多く使うパターンから試行
+  for (let i = Math.floor(total / num1); i >= 0; i--) {
+    let remainder = total - (i * num1);
+    if (remainder >= 0 && remainder % num2 === 0) {
+      let res1 = Array(i).fill(num1);
+      let res2 = Array(remainder / num2).fill(num2);
+      return res1.concat(res2);
+    }
+  }
+  return [];
+}
 
 
 
@@ -73,73 +162,6 @@ function applyAssortPattern2() {//書き出し先のH列をスキャンしてブ
 
 
 
-// function applyAssortPattern() {////上のコードを使用中、以下はバックアップ
-//   const ss = SpreadsheetApp.getActiveSpreadsheet();
-//   const free = ss.getSheetByName("フリー入力用");
-//   const ast = ss.getSheetByName("アソートDB");
-
-//   // 1. アソートDB（マスター）を辞書化
-//   const astData = ast.getRange("B2:Q" + ast.getLastRow()).getValues();
-//   let masterMap = {};
-//   astData.forEach(row => {
-//     const dayOfWeek = row[0]; // B列: 曜日
-//     const client = row[3];    // E列: クライアント
-//     const shop = row[4];      // F列: 店名
-//     // H列(索引6)からQ列(索引15)までのパターンを配列化（空白は除外）
-//     const pattern = row.slice(6, 16).filter(item => item !== "");
-    
-//     if (dayOfWeek && client && shop && pattern.length > 0) {
-//       const key = `${dayOfWeek}|${client}|${shop}`;
-//       masterMap[key] = pattern;
-//     }
-//   });
-
-//   // 2. フリー入力用のデータを取得
-//   const lastRow = free.getLastRow();
-//   if (lastRow < 2) return;
-//   const freeRange = free.getRange("B2:H" + lastRow);
-//   const freeData = freeRange.getValues();
-  
-//   const days = ["日", "月", "火", "水", "木", "金", "土"];
-//   let results = [];
-  
-//   // 3. グループごとに処理（日付＋クライアント＋店名が同じ範囲を特定）
-//   let i = 0;
-//   while (i < freeData.length) {
-//     const row = freeData[i];
-//     const date = new Date(row[0]);
-//     const dayStr = days[date.getDay()];
-//     const client = row[1];
-//     const shop = row[2];
-//     const key = `${dayStr}|${client}|${shop}`;
-
-//     // 同じグループが何行続くかカウント
-//     let groupRows = [];
-//     while (i < freeData.length && 
-//            Utilities.formatDate(new Date(freeData[i][0]), "JST", "yyyyMMdd") === Utilities.formatDate(date, "JST", "yyyyMMdd") &&
-//            freeData[i][1] === client && 
-//            freeData[i][2] === shop) {
-//       groupRows.push(i);
-//       i++;
-//     }
-
-//     // パターンの割り当て
-//     const pattern = masterMap[key];
-//     groupRows.forEach((rowIndex, index) => {
-//       if (pattern) {
-//         // パターン数で割った余りを使うことで、先頭に戻るループを実現
-//         const charToFill = pattern[index % pattern.length];
-//         results[rowIndex] = [charToFill];
-//       } else {
-//         results[rowIndex] = [""]; // マスターになければ空欄
-//       }
-//     });
-//   }
-
-//   // 4. H列に一括書き出し
-//   free.getRange(2, 8, results.length, 1).setValues(results);
-// }
-
 
 function setHToCharCIfUnique() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -182,6 +204,29 @@ function setHToCharCIfUnique() {
 
   // 3. H列に一括書き込み
   hRange.setValues(hresults);
+}
+
+
+function updateConcatColumn() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("フリー入力用");
+  const lastRow = sheet.getLastRow();
+
+  // データがない場合は終了
+  if (lastRow < 2) return;
+
+  // G列(7列目)とH列(8列目)のデータを取得
+  const data = sheet.getRange(2, 7, lastRow - 1, 2).getValues();
+
+  // H列 + G列 の順で連結した配列を作成
+  const results = data.map(row => {
+    const gVal = row[0]; // G列
+    const hVal = row[1]; // H列
+    return [String(hVal) + String(gVal)];
+  });
+
+  // M列(13列目)に一括書き出し
+  sheet.getRange(2, 13, results.length, 1).setValues(results);
 }
 
 

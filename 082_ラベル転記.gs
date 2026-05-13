@@ -54,7 +54,7 @@ function transferToLabels3() {
     // 配列の相対位置（0から数えるので、行番号-1）にセット
     labelValues[0][0] = deliveryDate; // A1
     labelValues[0][1] = clientName;   // B1
-    // labelValues[2][0] = routeNum;     // A3
+    // labelValues[2][0] = routeNum;     // A3(ルートを表示する場合はオンにする）
     labelValues[2][1] = shopName;     // B3
     labelValues[5][1] = productName;  // B6
     labelValues[7][0] = areaTag;      // A8
