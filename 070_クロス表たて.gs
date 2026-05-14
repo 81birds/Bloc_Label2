@@ -309,7 +309,7 @@ function applyTableLayout555() {
       // タイトル行（C列に制作場所名を含む）
       if (cellC.includes('豊ビル') || cellC.includes('エルブ奥')) {
         sheet.getRange(rIdx, 1, 1, lastCol)
-          .setBackground("#fff9c4")
+          .setBackground("#F0F0F0")
           .setFontWeight("bold")
           .setFontSize(12);
         return;

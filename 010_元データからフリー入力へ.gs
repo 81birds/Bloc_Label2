@@ -1,3 +1,9 @@
+/**
+ * MOTOシートからデータをスキャンし、SAKIシートに日付ごとに転記する
+ * 日付(2行目・E列〜)と商品名(3行目・E列〜)である必要
+ * 店舗名はC5からはじまっている必要
+ */
+
 function data2freeSheetAll() {
   ///console.log('--- 処理を開始します ---');
 
@@ -9,12 +15,7 @@ clearFreeInputBackgrounds();//背景色クリア
   ///console.log('--- すべての処理が正常に完了しました ---');
 }
 
-/**
- * MOTOシートからデータをスキャンし、SAKIシートに日付ごとに転記する
- * 日付(2行目・E列〜)と商品名(3行目・E列〜)である必要
- * 店舗名はC5からはじまっている必要
- * 
- */
+
 function transferData() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const motoSheet = ss.getSheetByName('元データ');
